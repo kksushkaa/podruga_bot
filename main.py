@@ -19,7 +19,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await context.bot.send_message(
         chat_id=update.effective_chat.id,
         text="Привет, PODRUGA!\n"
-             "Если ты нашла этот бот, то наша команда PODRUGA - единственный выход из твой ситуации.\n\n"
+             "Если ты нашла этот бот, то наша команда PODRUGA - единственный выход из твой ситуации!\n\n"
              "Знай, мы с тобой!\n"
              "PODRUGA, не упусти возможность стать частью НАС!")
 
