@@ -1,7 +1,7 @@
 from dotenv import load_dotenv
 import os
 import logging
-from telegram import Update
+from telegram import Update, ReplyKeyboardMarkup
 from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler
 
 load_dotenv()
@@ -16,7 +16,12 @@ logger = logging.getLogger(__name__)
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await context.bot.send_message(chat_id=update.effective_chat.id, text="I'm a bot, please talk to me!")
+    await context.bot.send_message(
+        chat_id=update.effective_chat.id,
+        text="Привет, PODRUGA!\n"
+             "Если ты нашла этот бот, то наша команда PODRUGA - единственный выход из твой ситуации.\n\n"
+             "Знай, мы с тобой!\n"
+             "PODRUGA, не упусти возможность стать частью НАС!")
 
 
 if __name__ == '__main__':
