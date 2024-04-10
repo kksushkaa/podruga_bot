@@ -24,12 +24,15 @@ def global_init(db_file):
 
     from . import __all_models
     from . import prediction
+    from . import cards
 
     SqlAlchemyBase.metadata.create_all(engine)
 
     session = create_session()
     if session.query(prediction.Prediction).count() == 0:
         prediction.init_prediction()
+    if session.query(cards.Cards).count() == 0:
+        cards.init_cards()
 
 
 def create_session() -> Session:
