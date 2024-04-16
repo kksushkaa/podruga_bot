@@ -18,7 +18,7 @@ logging.getLogger("httpx").setLevel(logging.WARNING)
 
 logger = logging.getLogger(__name__)
 
-MAIN, GADANIYA, NAME, PURPOSE, QUESTION, READY = range(6)
+MAIN, GADANIYA, NAME, PURPOSE, QUESTION, READY, RESULT = range(7)
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -172,10 +172,20 @@ async def gadat(update: Update, context: ContextTypes.DEFAULT_TYPE):
     ]
     with open(f'img/{card.image}', 'rb') as photo:
         await context.bot.send_photo(chat_id=update.effective_chat.id, photo=photo, caption=text, parse_mode="MarkdownV2", reply_markup=InlineKeyboardMarkup(keyboard))
+    return RESULT
 
+async def get_score(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    query = update.callback_query
+    await query.answer()
+    if query.data[0] == '1':
+        text = 'Себе единицу поставь, NEPODRUGA'
+    elif query.data[0] == '2':
+        text = 'Двойка добавлена в твой МЭШ'
 
+    await context.bot.send_message(chat_id=update.effective_chat.id, text=text)
+    await start(update, context)
 
-
+    return ConversationHandler.END
 
 
 if __name__ == '__main__':
@@ -190,10 +200,12 @@ if __name__ == '__main__':
                 MessageHandler(filters.Regex('^-$'), skip_answer),
                 MessageHandler(filters.TEXT & (~filters.COMMAND) & (~filters.Regex('^-$')), get_question)
             ],
-            READY: [MessageHandler(filters.Regex('^(ДА|ЕЩЁ КАК)$'), gadat)]
+            READY: [MessageHandler(filters.Regex('^(ДА|ЕЩЁ КАК)$'), gadat)],
+            RESULT: [CallbackQueryHandler(get_score, pattern=f'^._score$')]
         },
         fallbacks=[CallbackQueryHandler(gadania_start, pattern=f'^{str(GADANIYA)}$')]
     )
+
 
     application.add_handler(CommandHandler('start', start))
 
