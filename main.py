@@ -136,7 +136,7 @@ async def gadat(update: Update, context: ContextTypes.DEFAULT_TYPE):
     print(context.user_data['question'])
     text = f'{context.user_data["name"]}, Podruga. Наша система определила'
     if context.user_data['question'] != '-':
-        text += f', что ответ на твой вопрос "{context.user_data['question']}":\n'
+        text += f', что ответ на твой вопрос {context.user_data["question"]}:\n'
     else:
         text += f', что ответ на ваше секретное душевное переживание.\n'
     if context.user_data['purpose'] == 'Мой день':
