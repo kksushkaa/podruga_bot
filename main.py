@@ -25,9 +25,6 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         [
             InlineKeyboardButton('Гадаем', callback_data=str(GADANIYA))
         ],
-        [
-            InlineKeyboardButton('Рецепты', callback_data='2')
-        ]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     await context.bot.send_message(
