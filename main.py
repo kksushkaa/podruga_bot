@@ -26,12 +26,14 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         [
             InlineKeyboardButton('Гадаем', callback_data=str(GADANIYA))
         ],
+
         [
             InlineKeyboardButton('Новинки в зя', callback_data='3')
         ],
         [
             InlineKeyboardButton('Меню Stars Coffee', callback_data='4')
         ]
+
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     await context.bot.send_message(
@@ -281,8 +283,8 @@ async def gadat(update: Update, context: ContextTypes.DEFAULT_TYPE):
         ]
     ]
     with open(f'img/{card.image}', 'rb') as photo:
-        await context.bot.send_photo(chat_id=update.effective_chat.id, photo=photo, caption=text,
-                                     parse_mode="MarkdownV2", reply_markup=InlineKeyboardMarkup(keyboard))
+
+        await context.bot.send_photo(chat_id=update.effective_chat.id, photo=photo, caption=text, parse_mode="MarkdownV2", reply_markup=InlineKeyboardMarkup(keyboard))
     return RESULT
 
 
@@ -339,6 +341,7 @@ if __name__ == '__main__':
         },
         fallbacks=[CallbackQueryHandler(gadania_start, pattern=f'^4$')]
     )
+
 
     application.add_handler(CommandHandler('start', start))
 
