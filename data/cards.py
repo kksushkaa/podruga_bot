@@ -15,7 +15,7 @@ class Cards(SqlAlchemyBase):
 
 def init_cards():
     session = create_session()
-    with open('table1.csv', newline='') as csv_file:
+    with open('table1.csv', newline='', encoding='UTF-8') as csv_file:
         reader_object = csv.reader(csv_file, delimiter=';')
         for n, row in enumerate(reader_object):
             if n != 0:
