@@ -178,9 +178,15 @@ async def get_score(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
     if query.data[0] == '1':
-        text = 'Себе единицу поставь, NEPODRUGA'
+        text = 'Себе единицу поставь, NEPODRUGA!'
     elif query.data[0] == '2':
-        text = 'Двойка добавлена в твой МЭШ'
+        text = 'Прощай, NEPODRUGA!'
+    elif query.data[0] == '3':
+        text = 'BYE-BYE, NEPODRUGA!'
+    elif query.data[0] == '4':
+        text = 'Все понятно, NEPODRUGA!'
+    elif query.data[0] == '5':
+        text = 'Спасибо, ты настоящая PODRUGA!'
 
     await context.bot.send_message(chat_id=update.effective_chat.id, text=text)
     await start(update, context)
