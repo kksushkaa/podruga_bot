@@ -2,6 +2,8 @@ import requests
 from pprint import pprint
 # url = r"https://static-maps.yandex.ru/v1?ll=37.620070,55.753630&size=450,450&z=13&pt=37.620070,55.753630,pmwtm1~37.64,55.76363,pmwtm99&apikey=9d7592b8-29c0-4693-ba7b-ef2b24ff62b1"
 # r = requests.get(url)
+
+# данные для старс кофе
 cafe_drink = [
     ["Stars Coffee", "ул, Преображенская пл., 8", "frappe.jpg", 37.712812, 55.794887],
     ["Stars Coffee", "ул. Долгоруковская 7", "frappe.jpg", 37.603541, 55.773849],

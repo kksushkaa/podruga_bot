@@ -28,10 +28,13 @@ def global_init(db_file):
 
     SqlAlchemyBase.metadata.create_all(engine)
 
+    # запуск базы данных
     session = create_session()
     if session.query(prediction.Prediction).count() == 0:
+        # формрование базы данных предсказаний
         prediction.init_prediction()
     if session.query(cards.Cards).count() == 0:
+        # формрование базы данных карт
         cards.init_cards()
 
 

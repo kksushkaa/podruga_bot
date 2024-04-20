@@ -4,6 +4,7 @@ from .db_session import SqlAlchemyBase, create_session
 import csv
 
 
+# класс карт
 class Cards(SqlAlchemyBase):
     __tablename__ = 'cards'
 
@@ -13,6 +14,7 @@ class Cards(SqlAlchemyBase):
     yes_no_pred = sqlalchemy.Column(sqlalchemy.String)
 
 
+# инициализация карт
 def init_cards():
     session = create_session()
     with open('table1.csv', newline='', encoding='UTF-8') as csv_file:

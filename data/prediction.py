@@ -4,6 +4,7 @@ from .db_session import SqlAlchemyBase, create_session
 import csv
 
 
+# класс предсказаний
 class Prediction(SqlAlchemyBase):
     __tablename__ = 'prediction'
 
@@ -13,6 +14,7 @@ class Prediction(SqlAlchemyBase):
     career = sqlalchemy.Column(sqlalchemy.String)
 
 
+# инициализация предсказаний
 def init_prediction():
     session = create_session()
     with open('table2.csv', newline='', encoding='UTF-8') as csv_file:
@@ -24,6 +26,7 @@ def init_prediction():
                 session.add(new_prediction)
     session.commit()
     session.close()
+
 
 if __name__ == '__main__':
     init_prediction()

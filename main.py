@@ -30,6 +30,7 @@ logging.getLogger("httpx").setLevel(logging.WARNING)
 
 logger = logging.getLogger(__name__)
 
+# состония, использованные в проекте
 (
     MAIN,
     GADANIYA,
@@ -45,54 +46,67 @@ logger = logging.getLogger(__name__)
 ) = range(11)
 
 
+# стартовая фукция
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    # кнопки выбора действий
     keyboard = [
         [InlineKeyboardButton("Гадаем", callback_data=str(GADANIYA))],
-        [InlineKeyboardButton("Новинки в зя", callback_data=str(GOLD_APPLE))],
-        [InlineKeyboardButton("Меню Stars Coffee", callback_data=str(STAR_COFFEE))],
+        [InlineKeyboardButton("Новинка в ЗОЛОТОМ ЯБЛОКЕ", callback_data=str(GOLD_APPLE))],
+        [InlineKeyboardButton("Новинка в Stars Coffee", callback_data=str(STAR_COFFEE))],
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
+    # начальное текстовое сообщение
     await context.bot.send_message(
         chat_id=update.effective_chat.id,
         text="Привет, PODRUGA!\n"
-        "Если ты нашла этот бот, то наша команда PODRUGA - единственный выход из твой ситуации!\n\n"
-        "Знай, мы с тобой!\n"
-        "PODRUGA, не упусти возможность стать частью НАС!",
+             "Если ты нашла этот бот, то наша команда PODRUGA - единственный выход из твой ситуации!\n\n"
+             "Знай, мы с тобой!\n"
+             "PODRUGA, не упусти возможность стать частью НАС!",
         reply_markup=reply_markup,
     )
 
 
+# функия начала гадания
 async def gadania_start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    # текст-введение
     text = """Ты попала в инновационную систему гадания POGRUGA S TARO
 
 Для начала скажи мне, как тебя зовут, PODRUGA?"""
+    # получение имени
     await context.bot.send_message(chat_id=update.effective_chat.id, text=text)
     return NAME
 
 
+# функция новинок в золотом яблоке в зависимости от введенного адреса
 async def new_products_start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     text = """Введите свой адрес"""
+    # получение адреса
     await context.bot.send_message(chat_id=update.effective_chat.id, text=text)
     return GET_ADDRESS
 
 
+# функция новинок в старс кофе в зависимости от введенного адреса
 async def new_drinks_start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     text = """Введите свой адрес"""
+    # получение адреса
     await context.bot.send_message(chat_id=update.effective_chat.id, text=text)
     return GET_ADDRESS_CAFE
 
 
+# функция выбора категории гадания
 async def get_name(update: Update, context: ContextTypes.DEFAULT_TYPE):
     text = update.effective_message.text
     context.user_data["name"] = text
+    # выбор категории
     keyboard = [["Мой день"], ["Любовь"], ["Карьера"], ["Да/Нет"]]
+
     reply_markup = ReplyKeyboardMarkup(
         keyboard,
         one_time_keyboard=True,
         resize_keyboard=True,
         input_field_placeholder="Выбери категорию",
     )
-
+    # текст для выбора категории
     await context.bot.send_message(
         chat_id=update.effective_chat.id,
         text=f"Выбери категорию, которая соответствует запросу твоего гадания",
@@ -101,6 +115,7 @@ async def get_name(update: Update, context: ContextTypes.DEFAULT_TYPE):
     return PURPOSE
 
 
+# функция получения адреса зя
 async def get_shop_address(update: Update, context: ContextTypes.DEFAULT_TYPE):
     text = update.effective_message.text
     context.user_data["address"] = text
@@ -109,6 +124,7 @@ async def get_shop_address(update: Update, context: ContextTypes.DEFAULT_TYPE):
     import requests
     import sqlite3
 
+    # обращение к бд
     products = sqlite3.connect("new_product.db")
     cursor = products.cursor()
     cursor.execute("SELECT * FROM shop_products")
@@ -116,10 +132,12 @@ async def get_shop_address(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     address = text
 
+    # работа с адресом
     if address == "" or address.count(" ") == len(address):
         pass
     else:
         url = f"https://geocode-maps.yandex.ru/1.x/?apikey=b2f42f9a-efc2-4a51-b051-5dbd204fa768&geocode={address}&format=json"
+
         r = requests.get(url)
 
         geo_code = r.json()
@@ -134,15 +152,18 @@ async def get_shop_address(update: Update, context: ContextTypes.DEFAULT_TYPE):
         latitude = float(coordinates_6_1[0])
         longitude = float(coordinates_6_1[1])
         # print(latitude, longitude)
+
         min_range = 1000000000000000000
         shop_data = []
+
         for e in shop_prod:
             vec = (e[4] - latitude) ** 2 + (e[5] - longitude) ** 2
-            vec1 = vec**0.5
+            vec1 = vec ** 0.5
             if vec1 < min_range:
                 min_range = vec1
                 shop_data = e
 
+        # выбор фото по соответствующему адресу
         with open(f"products_photo/{shop_data[3]}", "rb") as photo:
             await context.bot.send_photo(
                 photo=photo,
@@ -153,6 +174,7 @@ async def get_shop_address(update: Update, context: ContextTypes.DEFAULT_TYPE):
     return ConversationHandler.END
 
 
+# функция получения адреса старс
 async def get_cafe_address(update: Update, context: ContextTypes.DEFAULT_TYPE):
     text = update.effective_message.text
     context.user_data["address"] = text
@@ -161,6 +183,7 @@ async def get_cafe_address(update: Update, context: ContextTypes.DEFAULT_TYPE):
     import requests
     import sqlite3
 
+    # обращение к бд
     drinks = sqlite3.connect("stars.db")
     cursor = drinks.cursor()
     cursor.execute("SELECT * FROM cafe_drink")
@@ -168,6 +191,7 @@ async def get_cafe_address(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     address = text
 
+    # работа с адресом
     if address == "" or address.count(" ") == len(address):
         pass
     else:
@@ -186,15 +210,19 @@ async def get_cafe_address(update: Update, context: ContextTypes.DEFAULT_TYPE):
         latitude = float(coordinates_6_1[0])
         longitude = float(coordinates_6_1[1])
         # print(latitude, longitude)
+
         min_range = 1000000000000000000
         shop_data = []
+
         for e in shop_prod:
             vec = (e[4] - latitude) ** 2 + (e[5] - longitude) ** 2
-            vec1 = vec**0.5
+            vec1 = vec ** 0.5
+
             if vec1 < min_range:
                 min_range = vec1
                 shop_data = e
 
+        # выбор фото по соответствующему адресу
         with open(f"products_photo/{shop_data[3]}", "rb") as photo:
             await context.bot.send_photo(
                 photo=photo,
@@ -205,9 +233,11 @@ async def get_cafe_address(update: Update, context: ContextTypes.DEFAULT_TYPE):
     return ConversationHandler.END
 
 
+# функция для ввода запрос
 async def get_purpose(update: Update, context: ContextTypes.DEFAULT_TYPE):
     text = update.effective_message.text
     context.user_data["purpose"] = text
+
     await context.bot.send_message(
         chat_id=update.effective_chat.id,
         text=f"Введи свой конкретный запрос ИЛИ '-' чтобы пропустить",
@@ -215,17 +245,19 @@ async def get_purpose(update: Update, context: ContextTypes.DEFAULT_TYPE):
     return QUESTION
 
 
+# функция для пропуска запроса
 async def skip_answer(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [["ДА", "ЕЩЁ КАК"]]
     text = update.effective_message.text
     context.user_data["question"] = text
+
     reply_markup = ReplyKeyboardMarkup(
         keyboard,
         one_time_keyboard=True,
         resize_keyboard=True,
         input_field_placeholder="Готова?",
     )
-
+    # заряжаем фото энергией
     with open("img/izn_card.jpg", "rb") as photo:
         await context.bot.send_photo(
             photo=photo,
@@ -236,16 +268,19 @@ async def skip_answer(update: Update, context: ContextTypes.DEFAULT_TYPE):
     return READY
 
 
+# выбор фото по соответствующему адресу
 async def get_question(update: Update, context: ContextTypes.DEFAULT_TYPE):
     text = update.effective_message.text
     context.user_data["question"] = text
     keyboard = [["ДА", "ЕЩЁ КАК"]]
+
     reply_markup = ReplyKeyboardMarkup(
         keyboard,
         one_time_keyboard=True,
         resize_keyboard=True,
         input_field_placeholder="Готова?",
     )
+    # взятие фото для передачи энергии
     with open("img/izn_card.jpg", "rb") as photo:
         await context.bot.send_photo(
             photo=photo,
@@ -256,33 +291,48 @@ async def get_question(update: Update, context: ContextTypes.DEFAULT_TYPE):
     return READY
 
 
+# функция для самого гадания
 async def gadat(update: Update, context: ContextTypes.DEFAULT_TYPE):
     text = update.effective_message.text
     session = db_session.create_session()
+    # выбор карты
     n = random.randint(1, 22)
+
     card = session.query(Cards).filter(Cards.id == n).first()
+
     prediction = session.query(Prediction).filter(Prediction.id == n).first()
-    print(context.user_data["name"])  # Ксюша
-    print(context.user_data["purpose"])  # Словами
+
+    print(context.user_data["name"])
+    print(context.user_data["purpose"])
     print(context.user_data["question"])
+
     text = f'{context.user_data["name"]}, Podruga. Наша система определила'
+    # при наличии запроса
     if context.user_data["question"] != "-":
         text += f', что ответ на твой вопрос {context.user_data["question"]}:\n'
     else:
+        # без запроса
         text += f", что ответ на ваше секретное душевное переживание.\n"
+    # тема день
     if context.user_data["purpose"] == "Мой день":
         prediction_text = prediction.day
         text += f"```\n{prediction_text}\n```"
+
+    # тема любовь
     elif context.user_data["purpose"] == "Любовь":
         prediction_text = prediction.love
         text += f"```\n{prediction_text}\n```"
+
+    # тема карьера
     elif context.user_data["purpose"] == "Карьера":
         prediction_text = prediction.career
         text += f"```\n{prediction_text}\n```"
+    # тема да/нет
     elif context.user_data["purpose"] == "Да/Нет":
         prediction_text = card.yes_no_pred
         text += f"```\n{prediction_text}\n```"
 
+    # создание финального текста
     text += f"\nПотому что выпала *карта*\\: *{card.card_name}*\n"
     text += f"__Podruga, оцени наш ответ на твой запрос__"
     text = text.replace(".", "\\.")
@@ -298,6 +348,7 @@ async def gadat(update: Update, context: ContextTypes.DEFAULT_TYPE):
             InlineKeyboardButton("5", callback_data="5_score"),
         ]
     ]
+    # фото для карты
     with open(f"img/{card.image}", "rb") as photo:
         await context.bot.send_photo(
             chat_id=update.effective_chat.id,
@@ -309,6 +360,7 @@ async def gadat(update: Update, context: ContextTypes.DEFAULT_TYPE):
     return RESULT
 
 
+# оценка гадания
 async def get_score(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()

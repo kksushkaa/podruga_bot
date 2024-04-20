@@ -13,6 +13,7 @@ cursor.execute("""CREATE TABLE cafe_drink
 
            """)
 
+# база данных для старс кофе
 cafe_drink = [
     ["Stars Coffee", "ул, Преображенская пл., 8", "frappe.jpg", 37.712812, 55.794887],
     ["Stars Coffee", "ул. Долгоруковская 7", "frappe.jpg", 37.603541, 55.773849],

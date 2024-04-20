@@ -4,6 +4,8 @@ import csv
 
 conn = sqlite3.connect('./gadalka.db')
 cur = conn.cursor()
+
+# класс таблицы базы данных карт
 cur.execute('''CREATE TABLE IF NOT EXISTS cards(
                             "id" INTEGER PRIMARY KEY AUTOINCREMENT,
                             "card_name" TEXT,
@@ -16,6 +18,8 @@ with open('table1.csv', newline ='') as csv_file:
             cur.execute(f'INSERT INTO cards VALUES(Null, "{row[1]}", "{row[2]}", "{row[3]}")')
             print(row)
 
+
+# класс таблицы базы данных предсказаний
 cur.execute('''CREATE TABLE IF NOT EXISTS prediction(
                             "id" INTEGER PRIMARY KEY AUTOINCREMENT,
                             "day" TEXT,
